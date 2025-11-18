@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Peliculas</title>
+</head>
+<body>
+    <div th:replace = "~{fragments/nav}"></div>
+    <h1>Peliculas</h1>
+
+    <form action="/peliculas/filtro" method="post">
+        <input type="text" name="titulo">
+        <select th:each="d : ${directores}" name="director">
+            <option value=""></option>
+            <option th:text="d.nombre" th:value="p.nombre"></option>
+        </select>
+        <input type="text" name="año">
+        <select th:each="p : ${peliculas}" name="genero">
+            <option value=""></option>
+            <option th:text="p.genero" th:value="p.genero"></option>
+        </select>
+        <button>Filtrar</button>
+    </form>
+</body>
+</html>
