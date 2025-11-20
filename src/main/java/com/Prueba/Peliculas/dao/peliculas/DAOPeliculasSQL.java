@@ -97,8 +97,7 @@ public class DAOPeliculasSQL implements DAOPeliculas{
         }
     }
 
-    @Override
-    public List<Pelicula> getPeliculasTitulo(String titulo) {
+    public List<Pelicula> getPeliculasTitulo(List<Pelicula> listaPeliculas, String titulo) {
         List<Pelicula> peliculas= new ArrayList<>();
         Pelicula pelicula = null;
         String query= "select * from Peliculas where titulo like ?";
@@ -110,7 +109,9 @@ public class DAOPeliculasSQL implements DAOPeliculas{
             while (rs.next()){
                 pelicula = new Pelicula(rs.getInt("id_pelicula"), rs.getString("titulo"), null, Genero.valueOf(rs.getString("genero")), rs.getInt("año"));
                 pelicula.setDirector(DAOFactory.getInstance().getDaoDirectores().getDirector(rs.getInt("id_director")));
-                peliculas.add(pelicula);
+                if (listaPeliculas.contains(pelicula)){
+                    peliculas.add(pelicula);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -118,8 +119,7 @@ public class DAOPeliculasSQL implements DAOPeliculas{
         return peliculas;
     }
 
-    @Override
-    public List<Pelicula> getPeliculasDirector(int idDirector) {
+    public List<Pelicula> getPeliculasDirector(List<Pelicula> listaPeliculas, int idDirector) {
         List<Pelicula> peliculas= new ArrayList<>();
         Pelicula pelicula = null;
         String query= "select * from Peliculas where id_director = ?";
@@ -131,7 +131,9 @@ public class DAOPeliculasSQL implements DAOPeliculas{
             while (rs.next()){
                 pelicula = new Pelicula(rs.getInt("id_pelicula"), rs.getString("titulo"), null, Genero.valueOf(rs.getString("genero")), rs.getInt("año"));
                 pelicula.setDirector(DAOFactory.getInstance().getDaoDirectores().getDirector(rs.getInt("id_director")));
-                peliculas.add(pelicula);
+                if (listaPeliculas.contains(pelicula)){
+                    peliculas.add(pelicula);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -139,8 +141,7 @@ public class DAOPeliculasSQL implements DAOPeliculas{
         return peliculas;
     }
 
-    @Override
-    public List<Pelicula> getPeliculasAño(int año) {
+    public List<Pelicula> getPeliculasAño(List<Pelicula> listaPeliculas, int año) {
         List<Pelicula> peliculas= new ArrayList<>();
         Pelicula pelicula = null;
         String query= "select * from Peliculas where año <= ?";
@@ -152,7 +153,31 @@ public class DAOPeliculasSQL implements DAOPeliculas{
             while (rs.next()){
                 pelicula = new Pelicula(rs.getInt("id_pelicula"), rs.getString("titulo"), null, Genero.valueOf(rs.getString("genero")), rs.getInt("año"));
                 pelicula.setDirector(DAOFactory.getInstance().getDaoDirectores().getDirector(rs.getInt("id_director")));
-                peliculas.add(pelicula);
+                if (listaPeliculas.contains(pelicula)){
+                    peliculas.add(pelicula);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return peliculas;
+    }
+
+    public List<Pelicula> getPeliculasGenero(List<Pelicula> listaPeliculas, Genero genero) {
+        List<Pelicula> peliculas= new ArrayList<>();
+        Pelicula pelicula = null;
+        String query= "select * from Peliculas where genero = ?";
+
+        try{
+            PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
+            statement.setString(1, genero.toString());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                pelicula = new Pelicula(rs.getInt("id_pelicula"), rs.getString("titulo"), null, Genero.valueOf(rs.getString("genero")), rs.getInt("año"));
+                pelicula.setDirector(DAOFactory.getInstance().getDaoDirectores().getDirector(rs.getInt("id_director")));
+                if (listaPeliculas.contains(pelicula)){
+                    peliculas.add(pelicula);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -161,14 +186,36 @@ public class DAOPeliculasSQL implements DAOPeliculas{
     }
 
     @Override
-    public List<Pelicula> getPeliculasGenero(Genero genero) {
+    public List<Pelicula> filtroPeliculas(String titulo, int idDirector, int año, Genero genero){
         List<Pelicula> peliculas= new ArrayList<>();
         Pelicula pelicula = null;
-        String query= "select * from Peliculas where genero = ?";
+        String query= "select * from Peliculas where ";
+        int posicion=1;
 
+        //hay que volver a pensarlo
         try{
             PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
-            statement.setString(1, genero.toString());
+            if (titulo !=null){
+                query = query+"titulo = ?";
+                statement.setString(posicion, titulo);
+                posicion++;
+            }
+            if ((Integer)idDirector != null){
+                query = query+"id_director = ?";
+                statement.setInt(posicion, idDirector);
+                posicion++;
+            }
+            if ((Integer)año != null){
+                query = query+"año <= ?";
+                statement.setInt(posicion, año);
+                posicion++;
+            }
+            if(genero != null){
+                query = query+"genero = ?";
+                statement.setString(posicion, genero.toString());
+                posicion++;
+            }
+
             ResultSet rs = statement.executeQuery();
             while (rs.next()){
                 pelicula = new Pelicula(rs.getInt("id_pelicula"), rs.getString("titulo"), null, Genero.valueOf(rs.getString("genero")), rs.getInt("año"));

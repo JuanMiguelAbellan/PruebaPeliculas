@@ -10,4 +10,5 @@ public interface DAODirectores {
     void insertDirector(Director director);
     Director modificarDirector(int idAntiguo, Director nuevo);
     void eliminarDirector(Director director);
+    int getId(String nombre);
 }

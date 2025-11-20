@@ -91,4 +91,21 @@ public class DAODirectoresSQL implements DAODirectores{
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public int getId(String nombre){
+        String query= "select id_director from Directores where nombre like ?";
+        int id=0;
+
+        try{
+            PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
+            statement.setString(1, nombre);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                id = rs.getInt("id_director");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return id;
+    }
 }
