@@ -17,6 +17,10 @@ public class Pelicula {
         this.año = año;
     }
 
+    public Pelicula() {
+
+    }
+
     public int getId() {
         return id;
     }

@@ -11,22 +11,22 @@
     <form action="/peliculas/filtro" method="post">
         <input type="text" name="titulo">
         <select name="director" >
-            <option th:each="d : ${directores}" th:text="${d.nombre}" th:value="${d.nombre}"></option>
+            <option value=""></option>
+            <option th:each="d : ${directores}" th:text="${d.nombre}" th:value="${d.id}"></option>
         </select>
         <input type="text" name="año">
         <select name="genero">
             <option value=""></option>
-            <option value="Terror">Terror</option>
-            <option value="Animacion">Animacion</option>
-            <option value="CienciaFiccion">Ciencia Ficcion</option>
-            <option value="Comedia">Comedia</option>
-            <option value="Drama">Drama</option>
-            <option value="Fantasia">Fantasia</option>
-            <option value="Romance">Romance</option>
+            <option th:each="g : ${generos}" th:text="${g}" th:value="${g}"></option>
         </select>
         <button>Filtrar</button>
     </form>
 
-    <table></table>
+    <ul th:each="p : ${peliculas}">
+        <li ><h3 th:text="${p.titulo}"></h3></li>
+        <li th:text="${p.director.nombre}"></li>
+        <li th:text="${p.año}"></li>
+        <li th:text="${p.genero}"></li>
+    </ul>
 </body>
 </html>

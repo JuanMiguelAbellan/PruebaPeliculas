@@ -8,6 +8,7 @@ import com.Prueba.Peliculas.entities.Pelicula;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class DAOPeliculasSQL implements DAOPeliculas{
 
     @Override
     public void insertPelicula(Pelicula pelicula) {
-        String query= "insert into Peliculas values(?, ?, ?, ?)";
+        String query= "insert into Peliculas(id_director, titulo, año, genero) values(?, ?, ?, ?)";
 
         try{
             PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
@@ -186,36 +187,33 @@ public class DAOPeliculasSQL implements DAOPeliculas{
     }
 
     @Override
-    public List<Pelicula> filtroPeliculas(String titulo, int idDirector, int año, Genero genero){
+    public List<Pelicula> filtroPeliculas(String titulo, Integer idDirector, Integer año, String genero){
         List<Pelicula> peliculas= new ArrayList<>();
         Pelicula pelicula = null;
-        String query= "select * from Peliculas where ";
-        int posicion=1;
+        StringBuilder query = new StringBuilder("select  * from Peliculas where 1=1");
+        List<Object> params = new ArrayList<>();
+        if (titulo !=null && !titulo.isEmpty()){
+            query.append(" and titulo like ?");
+            params.add("%" + titulo + "%");
+        }
+        if (idDirector != null && idDirector !=0){
+            query.append(" and id_director = ?");
+            params.add(idDirector);
+        }
+        if (año != null ){
+            query.append(" and año = ?");
+            params.add(año);
+        }
+        if(genero != null && !genero.isEmpty()){
+            query.append(" and genero = ?");
+            params.add(genero.toString());
+        }
 
-        //hay que volver a pensarlo
         try{
-            PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
-            if (titulo !=null){
-                query = query+"titulo = ?";
-                statement.setString(posicion, titulo);
-                posicion++;
+            PreparedStatement statement = DBConnection.getInstance().prepareStatement(query.toString());
+            for(int i =0; i < params.size();i++){
+                statement.setObject(i+1, params.get(i));
             }
-            if ((Integer)idDirector != null){
-                query = query+"id_director = ?";
-                statement.setInt(posicion, idDirector);
-                posicion++;
-            }
-            if ((Integer)año != null){
-                query = query+"año <= ?";
-                statement.setInt(posicion, año);
-                posicion++;
-            }
-            if(genero != null){
-                query = query+"genero = ?";
-                statement.setString(posicion, genero.toString());
-                posicion++;
-            }
-
             ResultSet rs = statement.executeQuery();
             while (rs.next()){
                 pelicula = new Pelicula(rs.getInt("id_pelicula"), rs.getString("titulo"), null, Genero.valueOf(rs.getString("genero")), rs.getInt("año"));
