@@ -1,5 +1,7 @@
 package com.Prueba.Peliculas.entities;
 
+import com.Prueba.Peliculas.dao.DAOFactory;
+
 import java.sql.Date;
 
 public class Pelicula {

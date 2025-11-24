@@ -35,8 +35,14 @@ public class PeliculasController {
                                   @RequestParam(required = false) Integer año,
                                   @RequestParam(required = false) String genero,
                                   Model model){
-        Director directorNuevo= DAOFactory.getInstance().getDaoDirectores().getDirector(director);
-        Genero generoNuevo= Genero.valueOf(genero);
+        Director directorNuevo= null;
+        if (director != null && director != 0){
+            directorNuevo= DAOFactory.getInstance().getDaoDirectores().getDirector(director);
+        }
+        Genero generoNuevo=null;
+        if (genero != null && genero != ""){
+            generoNuevo = Genero.valueOf(genero);
+        }
         List<Pelicula> peliculas= DAOFactory.getInstance().getDaoPeliculas().filtroPeliculas(titulo, directorNuevo, año, generoNuevo);
         List<Director> directorList = DAOFactory.getInstance().getDaoDirectores().getDirectores();
         Genero[] generoList= Genero.values();

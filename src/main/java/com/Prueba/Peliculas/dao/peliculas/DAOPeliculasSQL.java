@@ -28,7 +28,8 @@ public class DAOPeliculasSQL implements DAOPeliculas{
                         .director(DAOFactory.getInstance().getDaoDirectores().getDirector(rs.getInt("id_director")))
                         .año(rs.getInt("año"))
                         .titulo(rs.getString("titulo"))
-                        .genero(Genero.valueOf(rs.getString("genero")));
+                        .genero(Genero.valueOf(rs.getString("genero")))
+                        .id(rs.getInt("id_pelicula"));
                 peliculas.add(pelicula);
             }
         } catch (SQLException e) {
@@ -52,7 +53,8 @@ public class DAOPeliculasSQL implements DAOPeliculas{
                         .director(DAOFactory.getInstance().getDaoDirectores().getDirector(rs.getInt("id_director")))
                         .año(rs.getInt("año"))
                         .titulo(rs.getString("titulo"))
-                        .genero(Genero.valueOf(rs.getString("genero")));
+                        .genero(Genero.valueOf(rs.getString("genero")))
+                        .id(rs.getInt("id_pelicula"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -78,15 +80,32 @@ public class DAOPeliculasSQL implements DAOPeliculas{
 
     @Override
     public Pelicula modificarPelicula(int idAntigua, Pelicula nueva) {
-        String query= "update table Peliculas set id_director = ?, titulo = ?, año = ?, genero = ? where id_pelicula = ?";
+        StringBuilder query = new StringBuilder("update Peliculas set id_pelicula = " + idAntigua);
+        List<Object> params = new ArrayList<>();
+        if (nueva.getTitulo() !=null && !nueva.getTitulo().isEmpty()){
+            query.append(", titulo = ?");
+            params.add(nueva.getTitulo());
+        }
+        if (nueva.getDirector() != null){
+            nueva.director = DAOFactory.getInstance().getDaoDirectores().getDirectorNombre(nueva.getDirector().getNombre());
+            query.append(", id_director = ?");
+            params.add(nueva.getDirector().getId());
+        }
+        if ((Integer)nueva.getAño() != null && nueva.getAño() != 0){
+            query.append(", año = ?");
+            params.add(nueva.getAño());
+        }
+        if(nueva.getGenero() != null && !nueva.getGenero().toString().isEmpty()){
+            query.append(", genero = ?");
+            params.add(nueva.getGenero().toString());
+        }
 
         try{
-            PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
-            statement.setInt(1, nueva.getDirector().getId());
-            statement.setString(2, nueva.getTitulo());
-            statement.setInt(3, nueva.año);
-            statement.setString(4, nueva.genero.toString());
-            statement.setInt(5, idAntigua);
+            query.append(" where id_pelicula = " + Integer.toString(idAntigua));
+            PreparedStatement statement = DBConnection.getInstance().prepareStatement(query.toString());
+            for(int i =0; i < params.size();i++){
+                statement.setObject(i+1, params.get(i));
+            }
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -143,7 +162,8 @@ public class DAOPeliculasSQL implements DAOPeliculas{
                         .director(DAOFactory.getInstance().getDaoDirectores().getDirector(rs.getInt("id_director")))
                         .año(rs.getInt("año"))
                         .titulo(rs.getString("titulo"))
-                        .genero(Genero.valueOf(rs.getString("genero")));
+                        .genero(Genero.valueOf(rs.getString("genero")))
+                        .id(rs.getInt("id_pelicula"));
                 peliculas.add(pelicula);
             }
         } catch (SQLException e) {

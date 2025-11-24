@@ -1,9 +1,7 @@
 package com.Prueba.Peliculas.Rest;
 
 import com.Prueba.Peliculas.dao.DAOFactory;
-import com.Prueba.Peliculas.entities.Genero;
 import com.Prueba.Peliculas.entities.Pelicula;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,5 +21,11 @@ public class RestControllerPeliculas {
         return pelicula;
     }
 
-
+    @PutMapping("/api/peliculas/{id}")
+    public Pelicula editarPelicula(@PathVariable Integer id,
+                                   @RequestBody Pelicula peliculaNueva
+                                   ){
+        DAOFactory.getInstance().getDaoPeliculas().modificarPelicula(id, peliculaNueva);
+        return DAOFactory.getInstance().getDaoPeliculas().getPelicula(id);
+    }
 }
