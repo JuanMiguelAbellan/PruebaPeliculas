@@ -35,7 +35,9 @@ public class PeliculasController {
                                   @RequestParam(required = false) Integer año,
                                   @RequestParam(required = false) String genero,
                                   Model model){
-        List<Pelicula> peliculas= DAOFactory.getInstance().getDaoPeliculas().filtroPeliculas(titulo, director, año, genero);
+        Director directorNuevo= DAOFactory.getInstance().getDaoDirectores().getDirector(director);
+        Genero generoNuevo= Genero.valueOf(genero);
+        List<Pelicula> peliculas= DAOFactory.getInstance().getDaoPeliculas().filtroPeliculas(titulo, directorNuevo, año, generoNuevo);
         List<Director> directorList = DAOFactory.getInstance().getDaoDirectores().getDirectores();
         Genero[] generoList= Genero.values();
 
@@ -61,10 +63,11 @@ public class PeliculasController {
                                    @RequestParam(name = "director") Integer director,
                                    @RequestParam(name = "genero") String genero) {
         Pelicula pelicula = new Pelicula();
-        pelicula.setDirector(DAOFactory.getInstance().getDaoDirectores().getDirector(director));
-        pelicula.setAño(año);
-        pelicula.setTitulo(titulo);
-        pelicula.setGenero(Genero.valueOf(genero));
+        pelicula
+                .director(DAOFactory.getInstance().getDaoDirectores().getDirector(director))
+                .año(año)
+                .titulo(titulo)
+                .genero(Genero.valueOf(genero));
         DAOFactory.getInstance().getDaoPeliculas().insertPelicula(pelicula);
         return "redirect:/";
     }

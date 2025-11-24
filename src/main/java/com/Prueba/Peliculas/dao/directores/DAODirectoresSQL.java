@@ -20,8 +20,10 @@ public class DAODirectoresSQL implements DAODirectores{
             PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
             ResultSet rs = statement.executeQuery();
             while (rs.next()){
-                Director director = new Director(rs.getString("nombre"), rs.getInt("edad"));
-                director.setId(rs.getInt("id_director"));
+                Director director = new Director();
+                director.id(rs.getInt("id_director"))
+                        .nombre(rs.getString("nombre"))
+                        .edad(rs.getInt("edad"));
                 directors.add(director);
             }
         } catch (SQLException e) {
@@ -40,8 +42,10 @@ public class DAODirectoresSQL implements DAODirectores{
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()){
-                 director = new Director(rs.getString("nombre"), rs.getInt("edad"));
-                director.setId(rs.getInt("id_director"));
+                director = new Director();
+                director.id(rs.getInt("id_director"))
+                        .nombre(rs.getString("nombre"))
+                        .edad(rs.getInt("edad"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -107,5 +111,25 @@ public class DAODirectoresSQL implements DAODirectores{
             throw new RuntimeException(e);
         }
         return id;
+    }
+    @Override
+    public Director getDirectorNombre(String nombre){
+        String query= "select * from Directores where nombre like ?";
+        Director director=null;
+
+        try{
+            PreparedStatement statement = DBConnection.getInstance().prepareStatement(query);
+            statement.setString(1, nombre);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                director = new Director();
+                director.id(rs.getInt("id_director"))
+                        .nombre(rs.getString("nombre"))
+                        .edad(rs.getInt("edad"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return director;
     }
 }

@@ -5,9 +5,20 @@ public class Director {
     public String nombre;
     public int edad;
 
-    public Director(String nombre, int edad) {
-        this.nombre = nombre;
-        this.edad = edad;
+    public Director() {
+    }
+
+    public Director id(int id){
+        this.id=id;
+        return this;
+    }
+    public Director nombre(String nombre){
+        this.nombre=nombre;
+        return this;
+    }
+    public Director edad(int edad){
+        this.edad=edad;
+        return this;
     }
 
     public int getId() {

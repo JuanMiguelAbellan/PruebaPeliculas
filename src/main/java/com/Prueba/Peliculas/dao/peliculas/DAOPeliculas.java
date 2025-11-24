@@ -12,5 +12,5 @@ public interface DAOPeliculas {
     void insertPelicula(Pelicula pelicula);
     Pelicula modificarPelicula(int idAntigua, Pelicula nueva);
     void eliminarPelicula(Pelicula pelicula);
-    List<Pelicula> filtroPeliculas(String titulo, Integer idDirector, Integer año, String genero);
+    List<Pelicula> filtroPeliculas(String titulo, Director director, Integer año, Genero genero);
 }

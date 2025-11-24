@@ -9,55 +9,47 @@ public class Pelicula {
     public Genero genero;
     public int año;
 
-    public Pelicula(int id, String titulo, Director director, Genero genero, int año) {
-        this.id=id;
-        this.titulo = titulo;
-        this.director = director;
-        this.genero = genero;
-        this.año = año;
+    public Pelicula() {
     }
 
-    public Pelicula() {
-
+    public Pelicula id(int id){
+        this.id=id;
+        return this;
+    }
+    public Pelicula titulo(String titulo){
+        this.titulo=titulo;
+        return this;
+    }
+    public Pelicula director(Director director){
+        this.director=director;
+        return this;
+    }
+    public Pelicula genero(Genero genero){
+        this.genero=genero;
+        return this;
+    }
+    public Pelicula año(int año){
+        this.año=año;
+        return this;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getTitulo() {
         return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
     }
 
     public Director getDirector() {
         return director;
     }
 
-    public void setDirector(Director director) {
-        this.director = director;
-    }
-
     public Genero getGenero() {
         return genero;
     }
 
-    public void setGenero(Genero genero) {
-        this.genero = genero;
-    }
-
     public int getAño() {
         return año;
-    }
-
-    public void setAño(int año) {
-        this.año = año;
     }
 }
